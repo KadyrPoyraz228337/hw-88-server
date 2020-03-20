@@ -1,4 +1,5 @@
-const Post = require('../models/Post')
+const Post = require('../models/Post');
+const Comment = require('../models/Comment');
 
 module.exports = class postsService {
  constructor() {}
@@ -7,7 +8,14 @@ module.exports = class postsService {
    return new Promise(async (resolve, reject) => {
      try {
        const posts = await Post.find().sort({datetime: 1}).populate('user');
-       resolve(posts.reverse())
+       const data = await Promise.all(posts.map(async postItem => {
+         const totalComments = await Comment.aggregate([
+           { $match: {post: postItem._id} },
+           { $count: 'totalComments' }
+         ]);
+         return {...postItem._doc, ...totalComments[0]}
+       }));
+       resolve(data.reverse())
      } catch (e) {
        reject(e)
      }

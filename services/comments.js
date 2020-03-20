@@ -6,7 +6,6 @@ module.exports = class CommentsService {
   async addComment(id, user, text) {
     return new Promise(async (resolve, reject) => {
       try {
-        console.log(id, user, text);
         const comment = await Comment.create({
           text,
           post: id,

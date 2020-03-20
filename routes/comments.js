@@ -12,17 +12,17 @@ router.post('/', isAuth, (req, res) => {
 
     const service = new CommentService();
     const comment = service.addComment(id, user, text);
+
+    res.send(comment);
   } catch (e) {
     res.status(500).send(e)
   }
 });
 
-router.get('/:id', isAuth, async (req, res) => {
+router.get('/:id', async (req, res) => {
   try {
     const
       id = req.params.id;
-
-    console.log(id);
 
     const service = new CommentService();
     const comments = await service.getComments(id);
